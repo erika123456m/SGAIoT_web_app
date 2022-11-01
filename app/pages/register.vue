@@ -4,7 +4,7 @@
         <card class="card-login card-white">
           <template slot="header">
             <img src="img//card-UAM.png" alt="" />
-            <h1 class="card-title">SGAIoT</h1>
+            <h1 class="card-title"></h1>
           </template>
   
           <div>
@@ -37,7 +37,7 @@
           <div slot="footer">
             <base-button
               native-type="submit"
-              type="primary"
+              type="success"
               class="mb-3"
               size="lg"
               @click="register"

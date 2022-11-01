@@ -37,7 +37,7 @@
     },
     data() {
       return {
-        sidebarBackground: "primary" //vue|blue|orange|green|red|primary
+        sidebarBackground: "success" //vue|blue|orange|green|red|primary
       };
     },
     methods: {
