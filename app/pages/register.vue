@@ -40,7 +40,7 @@
               type="success"
               class="mb-3"
               size="lg"
-              @click="register"
+              @click="register()"
               block
             >
               Register
@@ -62,22 +62,60 @@
       </div>
     </div>
   </template>
-  <script>
-  export default {
-    layout: "auth",
-    data() {
-      return {
-        user: {
-          name: "",
-          email: "",
-          password: ""
+<script>
+export default {
+  middleware: "notAuthenticated",
+  layout: "auth",
+  data() {
+    return {
+      user: {
+        name: "",
+        email: "",
+        password: ""
+      }
+    };
+  },
+methods: {
+  register() {
+    this.$axios
+      .post("/register", this.user)
+      .then(res => {
+        //success! - Usuario creado.
+        if (res.data.status == "success") {
+          this.$notify({
+            type: "success",
+            icon: "tim-icons icon-check-2",
+            message: "Success! Now you can login..."
+          });
+          this.user.name = "";
+          this.user.password = "";
+          this.user.email = "";
+          return;
         }
-      };
-    },
-    methods: {}
-  };
-  </script>
-  <style>
+      })
+      .catch(e => {
+        console.log(e.response.data);
+        if (e.response.data.error.errors.email.kind == "unique") {
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: "User already exists :("
+          });
+          return;
+        } else {
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: "Error creating user..."
+          });
+          return;
+        }
+      });
+  }
+  }
+};
+</script>
+<style>
   .navbar-nav .nav-item p {
     line-height: inherit;
     margin-left: 5px;
