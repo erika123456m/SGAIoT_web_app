@@ -588,7 +588,7 @@
         </div>
       </div>
   
-      <!-- SAVE TEMPLATE-->
+      <!-- SAVE TEMPLATE FORM-->
       <div class="row">
         <card>
           <div slot="header">
@@ -623,6 +623,7 @@
                 class="mb-3 pull-right"
                 size="lg"
                 @click="saveTemplate()"
+                :disabled="widgets.length == 0"
               >
                 Save Template
               </base-button>
@@ -687,153 +688,259 @@
       </div>
   
       <!-- JSONS -->
-      <Json :value="widgets"></Json>
+      <Json :value="templates"></Json>
     </div>
   </template>
   
-  <script>
-  import { Table, TableColumn } from "element-ui";
-  import { Select, Option } from "element-ui";
-  export default {
-    components: {
-      [Table.name]: Table,
-      [TableColumn.name]: TableColumn,
-      [Option.name]: Option,
-      [Select.name]: Select
-    },
-    data() {
-      return {
-        widgets: [],
-        templates: [],
-        widgetType: "",
-        templateName: "",
-        templateDescription: "",
-        ncConfig: {
-          userId: "sampleuserid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888"
-          },
-          variableFullName: "temperature",
-          variable: "varname",
-          unit: "Watts",
-          class: "success",
-          column: "col-12",
-          decimalPlaces: 2,
-          widget: "numberchart",
-          icon: "fa-bath",
-          chartTimeAgo: 1566,
-          demo: true
+<script>
+import { Table, TableColumn } from "element-ui";
+import { Select, Option } from "element-ui";
+export default {
+  components: {
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn,
+    [Option.name]: Option,
+    [Select.name]: Select
+  },
+  data() {
+    return {
+      widgets: [],
+      templates: [],
+      widgetType: "",
+      templateName: "",
+      templateDescription: "",
+      ncConfig: {
+        userId: "sampleuserid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888"
         },
-        iotSwitchConfig: {
-          userId: "userid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888"
-          },
-          variableFullName: "Luz",
-          variable: "varname",
-          class: "danger",
-          widget: "switch",
-          icon: "fa-bath",
-          column: "col-6"
+        variableFullName: "temperature",
+        variable: "varname",
+        unit: "Watts",
+        class: "success",
+        column: "col-12",
+        decimalPlaces: 2,
+        widget: "numberchart",
+        icon: "fa-bath",
+        chartTimeAgo: 1566,
+        demo: true
+      },
+      iotSwitchConfig: {
+        userId: "userid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888"
         },
-        configButton: {
-          userId: "userid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888"
-          },
-          variableFullName: "temperature",
-          text: "send",
-          message: "testing123",
-          variable: "varname",
-          widget: "button",
-          icon: "fa-bath",
-          column: "col-6"
+        variableFullName: "Luz",
+        variable: "varname",
+        class: "danger",
+        widget: "switch",
+        icon: "fa-bath",
+        column: "col-6"
+      },
+      configButton: {
+        userId: "userid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888"
         },
-        iotIndicatorConfig: {
-          userId: "userid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888"
-          },
-          variableFullName: "temperature",
-          variable: "varname",
-          class: "success",
-          widget: "indicator",
-          icon: "fa-bath",
-          column: "col-6"
+        variableFullName: "temperature",
+        text: "send",
+        message: "testing123",
+        variable: "varname",
+        widget: "button",
+        icon: "fa-bath",
+        column: "col-6"
+      },
+      iotIndicatorConfig: {
+        userId: "userid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888"
         },
-        configButton: {
-          userId: "userid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888",
-            templateName: "Power Sensor",
-            templateId: "984237562348756ldksjfh",
-            saverRule: false
-          },
-          variableFullName: "Pump",
-          variable: "var1",
-          icon: "fa-sun",
-          column: "col-4",
-          widget: "indicator",
-          class: "danger",
-          message: "{'fanstatus': 'stop'}"
+        variableFullName: "temperature",
+        variable: "varname",
+        class: "success",
+        widget: "indicator",
+        icon: "fa-bath",
+        column: "col-6"
+      },
+      configButton: {
+        userId: "userid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888",
+          templateName: "Power Sensor",
+          templateId: "984237562348756ldksjfh",
+          saverRule: false
         },
-        configIndicator: {
-          userId: "userid",
-          selectedDevice: {
-            name: "Home",
-            dId: "8888",
-            templateName: "Power Sensor",
-            templateId: "984237562348756ldksjfh",
-            saverRule: false
-          },
-          variableFullName: "Pump",
-          variable: "var1",
-          icon: "fa-sun",
-          column: "col-6",
-          widget: "indicator",
-          class: "success"
+        variableFullName: "Pump",
+        variable: "var1",
+        icon: "fa-sun",
+        column: "col-4",
+        widget: "indicator",
+        class: "danger",
+        message: "{'fanstatus': 'stop'}"
+      },
+      configIndicator: {
+        userId: "userid",
+        selectedDevice: {
+          name: "Home",
+          dId: "8888",
+          templateName: "Power Sensor",
+          templateId: "984237562348756ldksjfh",
+          saverRule: false
+        },
+        variableFullName: "Pump",
+        variable: "var1",
+        icon: "fa-sun",
+        column: "col-6",
+        widget: "indicator",
+        class: "success"
+      }
+    };
+  },
+
+  mounted() {
+    this.getTemplates();
+  },
+
+  methods: {
+
+    //Get Templates
+    async getTemplates() {
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.token
         }
       };
-    },
-    methods: {
-      addNewWidget() {
-        if (this.widgetType == "numberchart") {
-          this.ncConfig.variable = this.makeid(10);
-          this.widgets.push(JSON.parse(JSON.stringify(this.ncConfig)));
+      try {
+        const res = await this.$axios.get("/template", axiosHeaders);
+        console.log(res.data);
+        if (res.data.status == "success") {
+          this.templates = res.data.data;
         }
-        if (this.widgetType == "switch") {
-          this.iotSwitchConfig.variable = this.makeid(10);
-          this.widgets.push(JSON.parse(JSON.stringify(this.iotSwitchConfig)));
-        }
-        if (this.widgetType == "button") {
-          this.configButton.variable = this.makeid(10);
-          this.widgets.push(JSON.parse(JSON.stringify(this.configButton)));
-        }
-        if (this.widgetType == "indicator") {
-          this.configIndicator.variable = this.makeid(10);
-          this.widgets.push(JSON.parse(JSON.stringify(this.configIndicator)));
-        }
-      },
-      deleteWidget(index) {
-      this.widgets.splice(index, 1);
-    },
-      makeid(length) {
-        var result = "";
-        var characters =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var charactersLength = characters.length;
-        for (var i = 0; i < length; i++) {
-          result += characters.charAt(
-            Math.floor(Math.random() * charactersLength)
-          );
-        }
-        return result;
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting templates..."
+        });
+        console.log(error);
+        return;
       }
+    },
+    //Save Template
+  async saveTemplate() {
+    const axiosHeaders = {
+      headers: {
+        token: this.$store.state.auth.token
+      }
+    };
+    console.log(axiosHeaders);
+
+    const toSend = {
+      template: {
+        name: this.templateName,
+        description: this.templateDescription,
+        widgets: this.widgets
+      }
+    };
+
+    try {
+      const res = await this.$axios.post("/template", toSend, axiosHeaders);
+      if (res.data.status == "success") {
+        this.$notify({
+          type: "success",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Template created!"
+        });
+        
+        this.getTemplates();
+      }
+    } catch (error) {
+      this.$notify({
+        type: "danger",
+        icon: "tim-icons icon-alert-circle-exc",
+        message: "Error creating template..."
+      });
+      console.log(error);
+      return;
     }
-  };
-  </script>
+    },
+
+    //Delete Template
+    async deleteTemplate(template) {
+
+      const axiosHeaders = {
+        headers: {
+          token: this.$store.state.auth.token
+        },
+        params: {
+          templateId: template._id
+        }
+      };
+      console.log(axiosHeaders);
+      try {
+        const res = await this.$axios.delete("/template", axiosHeaders);
+        if (res.data.status == "success") {
+          this.$notify({
+            type: "success",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: template.name + " was deleted!"
+          });
+
+          this.getTemplates();
+        }
+      } catch (error) {
+        this.$notify({
+          type: "danger",
+          icon: "tim-icons icon-alert-circle-exc",
+          message: "Error getting templates..."
+        });
+        console.log(error);
+        return;
+      }
+    },
+
+    //Add Widget
+    addNewWidget() {
+
+      if (this.widgetType == "numberchart") {
+        this.ncConfig.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.ncConfig)));
+      }
+      if (this.widgetType == "switch") {
+        this.iotSwitchConfig.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.iotSwitchConfig)));
+      }
+      if (this.widgetType == "button") {
+        this.configButton.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configButton)));
+      }
+      if (this.widgetType == "indicator") {
+        this.configIndicator.variable = this.makeid(10);
+        this.widgets.push(JSON.parse(JSON.stringify(this.configIndicator)));
+      }
+    },
+
+    //Delete Widget
+    deleteWidget(index) {
+    this.widgets.splice(index, 1);
+  },
+    makeid(length) {
+      var result = "";
+      var characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength)
+        );
+      }
+      return result;
+    }
+  }
+};
+</script>

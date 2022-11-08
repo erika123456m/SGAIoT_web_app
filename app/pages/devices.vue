@@ -73,7 +73,7 @@
           <h4 class="card-title">Devices</h4>
         </div>
 
-        <el-table :data="devices">
+        <el-table :data="$store.state.devices">
 
           <el-table-column label="#" min-width="50" align="center">
             <div slot-scope="{ row, $index }">
@@ -132,6 +132,9 @@
         </el-table>
       </card>
     </div>
+
+    <Json :value="$store.state.devices"></Json>
+
   </div>
 </template>
 
@@ -139,6 +142,7 @@
 import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
 export default {
+  middleware: 'authenticated',
   components: {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
@@ -147,39 +151,46 @@ export default {
   },
   data() {
     return {
-      devices: [
-        {
-          name: "Home",
-          dId: "8888",
-          templateName: "Power Sensor",
-          templateId: "984237562348756ldksjfh",
-          saverRule: false
-        },
-        {
-          name: "Office",
-          dId: "1111",
-          templateName: "Power Sensor",
-          templateId: "984237562348756ldksjfh",
-          saverRule: false
-          
-        },
-        {
-          name: "Farm",
-          dId: "99999",
-          templateName: "Power Sensor",
-          templateId: "984237562348756ldksjfh",
-          saverRule: false
-        }
-      ]
     };
+  },
+  mounted() {
+  this.$store.dispatch("getDevices");
   },
   methods: {
     deleteDevice(device) {
-      alert("DELETING " + device.name);
+      const axiosHeader = {
+        headers: {
+          token: this.$store.state.auth.token
+        },
+        params: {
+          dId: device.dId
+        }
+      };
+      this.$axios
+        .delete("/device", axiosHeader)
+        .then(res => {
+          if (res.data.status == "success") {
+            this.$notify({
+              type: "success",
+              icon: "tim-icons icon-check-2",
+              message: device.name + " deleted!"
+            });
+            this.$store.dispatch("getDevices");
+          }
+
+        })
+        .catch(e => {
+          console.log(e);
+          this.$notify({
+            type: "danger",
+            icon: "tim-icons icon-alert-circle-exc",
+            message: " Error deleting " + device.name
+          });
+        });
     },
-    updateSaverRuleStatus(index){
-        console.log(index)
-        this.devices[index].saverRule = !this.devices[index].saverRule;
+    updateSaverRuleStatus(index) {
+      console.log(index);
+      this.devices[index].saverRule = !this.devices[index].saverRule;
     }
   }
 };
