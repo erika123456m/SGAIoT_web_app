@@ -90,7 +90,7 @@ async function createResources() {
             "config": {
                 url: "http://localhost:3001/api/saver-webhook",
                 headers: {
-                    token: "776120"
+                    token: "121212"
                 },
                 method: "POST"
             },
@@ -102,7 +102,7 @@ async function createResources() {
             "config": {
                 url: "http://localhost:3001/api/alarm-webhook",
                 headers: {
-                    token: "776120"
+                    token: "121212"
                 },
                 method: "POST"
             },
