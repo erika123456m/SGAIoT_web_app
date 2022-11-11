@@ -1,15 +1,85 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const axios = require('axios');
-const colors = require('colors');
+const axios = require("axios");
+const colors = require("colors");
 const { dragDisable } = require('d3');
 
-router.post('/saver-webhook',  async (req, res) => {
+import Data from "../models/data.js";
+import Device from "../models/device.js";
+
+//Saver WEBHOOK
+router.post("/saver-webhook", async (req, res) => {
+
+    try {
+        if (req.headers.token != "121212") {
+            req.sendStatus(404);
+            return;
+          }
+        
+          const data = req.body;
+        
+          const splittedTopic = data.topic.split("/");
+          const dId = splittedTopic[1];
+          const variable = splittedTopic[2];
+            
+          var result = await Device.find({dId: dId, userId: data.userId});
+        
+          if (result.length == 1){
+              Data.create({
+                userId: data.userId,
+                dId: dId,
+                variable: variable,
+                value: data.payload.value,
+                time: Date.now()
+              })
+              console.log("Data created");
+          }
+        
+          res.sendStatus(200);
+        
+        
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(200);
+    }
+
+});
+
+router.post("/alarm-webhook", async (req, res) => {
+
+    try {
+
+        if (req.headers.token != "121212") {
+            req.sendStatus(404);
+            return;
+          }
+
+          const data = req.body;
+
+          const splittedTopic = data.topic.split("/");
+          const dId = splittedTopic[1];
+          const variable = splittedTopic[2];
+
+          var result = await Device.find({dId: dId, userId: data.userId});
+
+          if (result.length == 1){
+              Data.create({
+                userId: data.userId,
+                dId: dId,
+                variable: variable,
+                value: data.payload.value,
+                time: Date.now()
+              })
+              console.log("Data created");
+          }
+
+          res.sendStatus(200);
 
 
-    const data = req.body;
-    console.log(data);
-    res.json("{}");
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(200);
+    }
 
 });
 

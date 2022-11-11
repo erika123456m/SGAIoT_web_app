@@ -8,6 +8,8 @@ const axios = require("axios");
 
 import Device from "../models/device.js";
 import SaverRule from "../models/emqx_saver_rule.js";
+import Template from '../models/template.js';
+import AlarmRule from '../models/emqx_alarm_rule.js';
 
 /*
   API
@@ -35,11 +37,18 @@ router.get("/device", checkAuth, async (req, res) => {
     //get saver rules
     const saverRules = await getSaverRules(userId);
 
-    //saver rules to --> devices
+    //get templates
+    const templates = await getTemplates(userId);
+
+    //get alarm rules
+    const alarmRules = await getAlarmRules(userId);
+
+    //saver rules to -> devices
     devices.forEach((device, index) => {
       devices[index].saverRule = saverRules.filter(saverRule => saverRule.dId == device.dId)[0];
+      devices[index].template = templates.filter(template => template._id == device.templateId)[0];
+      devices[index].alarmRules = alarmRules.filter(alarmRule => alarmRule.dId == device.dId);
     });
-
     const toSend = {
       status: "success",
       data: devices
@@ -48,8 +57,9 @@ router.get("/device", checkAuth, async (req, res) => {
     res.json(toSend);
 
   } catch (error) {
-    console.log("ERROR CREATING NEW DEVICE");
-  
+    console.log("ERROR GETTING DEVICES");
+    console.log(error)
+
     const toSend = {
       status: "error",
       error: error
@@ -68,11 +78,12 @@ router.post("/device", checkAuth, async (req, res) => {
     var newDevice = req.body.newDevice;
 
     newDevice.userId = userId;
+
     newDevice.createdTime = Date.now();
 
-    const device = await Device.create(newDevice);
-
     await createSaverRule(userId, newDevice.dId, true);
+
+    const device = await Device.create(newDevice);
 
     await selectDevice(userId, newDevice.dId);
 
@@ -128,11 +139,11 @@ try {
 });
 
 //UPDATE DEVICES
-router.put("/device", checkAuth, (req, res) => {
+router.put("/device", checkAuth, async (req, res) => {
   const dId = req.body.dId;
   const userId = req.userData._id;
 
-  if (selectDevice(userId, dId)) {
+  if (await selectDevice(userId, dId)) {
     const toSend = {
       status: "success"
     };
@@ -148,12 +159,11 @@ router.put("/device", checkAuth, (req, res) => {
 });
 
 //SAVER-RULE STATUS UPDATER
-router.put('/saver-rule', checkAuth, async (req, res) => {
-
+router.put("/saver-rule", checkAuth, async (req, res) => {
 
   const rule = req.body.rule;
 
-  console.log(rule)
+  console.log(rule);
 
   await updateSaverRuleStatus(rule.emqxRuleId, rule.status)
 
@@ -169,6 +179,17 @@ router.put('/saver-rule', checkAuth, async (req, res) => {
 /*
   functions
 */
+
+async function getAlarmRules(userId) {
+
+  try {
+      const rules = await AlarmRule.find({ userId: userId });
+      return rules;
+  } catch (error) {
+      return "error";
+  }
+
+}
 
 async function selectDevice(userId, dId) {
   try {
@@ -194,6 +215,17 @@ async function selectDevice(userId, dId) {
 /*
  SAVER RULES FUNCTIONS
 */
+
+//get templates
+async function getTemplates(userId) {
+  try {
+    const templates = await Template.find({ userId: userId });
+    return templates;
+  } catch (error) {
+    return false;
+  }
+} 
+
 //get saver rules
 async function getSaverRules(userId) {
   try {
@@ -206,9 +238,9 @@ async function getSaverRules(userId) {
 
 //create saver rule
 async function createSaverRule(userId, dId, status) {
-  console.log(userId)
+  console.log(userId);
   console.log(dId);
-  console.log(status)
+  console.log(status);
 
   try {
     const url = "http://localhost:8085/api/v4/rules";
@@ -241,7 +273,6 @@ async function createSaverRule(userId, dId, status) {
     console.log(res.data.data);
 
     if (res.status === 200 && res.data.data) {
-      console.log(res.data.data);
 
       await SaverRule.create({
         userId: userId,

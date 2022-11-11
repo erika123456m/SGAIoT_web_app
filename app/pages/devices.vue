@@ -2,7 +2,8 @@
     <div>
         <!-- FORM ADD DEVICE -->
     <div class="row">
-      <card>
+      <Json :value="$store.state.selectedDevice"></Json>
+        <card>
         <div slot="header">
           <h4 class="card-title">Add new Device</h4>
         </div>
@@ -93,7 +94,7 @@
 
               <el-tooltip content="Database Saver">
                 <base-switch
-                  @click="updateSaverRuleStatus(row.saveRule)"
+                  @click="updateSaverRuleStatus(row.saverRule)"
                   :value="row.saverRule.status"
                   type="primary"
                   on-text="On"
@@ -125,7 +126,7 @@
         </el-table>
       </card>
     </div>
-
+    <Json :value="$store.state.selectedDevice"></Json>
     <Json :value="$store.state.devices"></Json>
 
   </div>
@@ -155,7 +156,6 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch("getDevices");
     this.getTemplates();
   },
   methods: {
