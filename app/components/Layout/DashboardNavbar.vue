@@ -127,7 +127,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getDevices");
-    this.$store.dispatch("getNotifications");
     this.$nuxt.$on("selectedDeviceIndex", this.updateSelectedDeviceIndex);
   },
   beforeDestroy() {
@@ -143,6 +142,9 @@ export default {
           token: this.$store.state.auth.token
         }
       };
+
+      var auto
+
       const toSend = {
         notifId: notifId
       };

@@ -92,6 +92,7 @@
   import ContentFooter from '@/components/Layout/ContentFooter.vue';
   import DashboardContent from '@/components/Layout/Content.vue';
   import { SlideYDownTransition, ZoomCenterTransition } from 'vue2-transitions';
+  import mqtt from "mqtt";
 
   export default {
     components: {
@@ -104,7 +105,8 @@
     },
     data() {
       return {
-        sidebarBackground: 'vue' //vue|blue|orange|green|red|primary
+        sidebarBackground: 'vue', //vue|blue|orange|green|red|primary
+        client:null
       };
     },
     computed: {
@@ -112,7 +114,79 @@
         return this.$route.path === '/maps/full-screen'
       }
     },
-    methods: {
+  methods: {
+
+    startMqttClient() {
+      const options = {
+        host: "localhost",
+        port: 8083,
+        endpoint: "/mqtt",
+        clean: true,
+        connectTimeout: 5000,
+        reconnectPeriod: 5000,
+        // Certification Information
+        clientId: "web_" + this.$store.state.auth.userData.name + "_" + Math.floor(Math.random() * 1000000 + 1),
+        username: "superuser",
+        password: "superuser"
+      };
+      //ex topic: "userid/did/variableId/sdata"
+      const deviceSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/sdata";
+      const notifSubscribeTopic = this.$store.state.auth.userData._id + "/+/+/notif";
+      const connectUrl = "ws://" + options.host + ":" + options.port + options.endpoint;
+      try {
+        this.client = mqtt.connect(connectUrl, options);
+      } catch (error) {
+        console.log(error);
+      }
+      //MQTT CONNECTION SUCCESS
+      this.client.on('connect', () => {
+        console.log('Connection succeeded!');
+        //SDATA SUBSCRIBE
+        this.client.subscribe(deviceSubscribeTopic, { qos: 0 }, (err) => {
+          if (err) {
+            console.log("Error in DeviceSubscription");
+            return;
+          }
+          console.log("Device subscription Success");
+          console.log(deviceSubscribeTopic);
+        });
+        //NOTIF SUBSCRIBE
+        this.client.subscribe(notifSubscribeTopic, { qos: 0 }, (err) => {
+          if (err) {
+            console.log("Error in NotifSubscription");
+            return;
+          }
+          console.log("Notif subscription Success");
+          console.log(notifSubscribeTopic);
+        });
+      });
+      this.client.on('error', error => {
+        console.log('Connection failed', error)
+      })
+      this.client.on("reconnect", (error) => {
+        console.log("reconnecting:", error);
+      });
+
+      this.client.on('message', (topic, message) => {
+        console.log("Message from topic " + topic + " -> ");
+        console.log(message.toString());
+        try {
+          const splittedTopic = topic.split("/");
+          const msgType = splittedTopic[3];
+          if (msgType == "notif") {
+            this.$notify({ type: 'danger', icon: 'tim-icons icon-alert-circle-exc', message: message.toString() });
+            this.$store.dispatch("getNotifications");
+            return;
+          } else if (msgType == "sdata") {
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+      });
+
+    },
+    
       toggleSidebar() {
         if (this.$sidebar.showSidebar) {
           this.$sidebar.displaySidebar(false);
@@ -133,8 +207,10 @@
         }
       }
     },
-    mounted() {
+  mounted() {
+      this.$store.dispatch("getNotifications");
       this.initScrollbar();
+      this.startMqttClient();
     }
   };
 </script>
