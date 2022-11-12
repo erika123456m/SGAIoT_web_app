@@ -1,77 +1,50 @@
 <template>
-  <base-nav
-    v-model="showMenu"
-    class="navbar-absolute top-navbar"
-    type="white"
-    :transparent="true"
-  >
+  <base-nav v-model="showMenu" class="navbar-absolute top-navbar" type="white" :transparent="true">
     <div slot="brand" class="navbar-wrapper">
-      <div
-        class="navbar-toggle d-inline"
-        :class="{ toggled: $sidebar.showSidebar }"
-      >
+      <div class="navbar-toggle d-inline" :class="{ toggled: $sidebar.showSidebar }">
         <button type="button" class="navbar-toggler" @click="toggleSidebar">
           <span class="navbar-toggler-bar bar1"></span>
           <span class="navbar-toggler-bar bar2"></span>
           <span class="navbar-toggler-bar bar3"></span>
         </button>
       </div>
-      <a class="navbar-brand ml-xl-3 ml-5" href="#SGAIoT">{{ routeName }}</a>
+      <a class="navbar-brand ml-xl-3 ml-5" href="#pablo">{{ routeName }}</a>
     </div>
 
     <ul class="navbar-nav" :class="$rtl.isRTL ? 'mr-auto' : 'ml-auto'">
 
-    <el-select class="select-success" placeholder="Select Device" @change="selectDevice()" v-model="selectedDevice"
-      
-        >
-       <el-option
-          v-for="(device, index) in $store.state.devices"
-          :value="index"
-          :label="device.name"
-          :key="device._id"
-        >
+      <el-select class="select-success" placeholder="Select Device" @change="selectDevice()" v-model="selectedDevice">
+        <el-option v-for="(device, index) in $store.state.devices" :value="index" :label="device.name"
+          :key="device._id">
         </el-option>
       </el-select>
-      <base-dropdown
-        tag="li"
-        :menu-on-right="!$rtl.isRTL"
-        title-tag="a"
-        title-classes="nav-link"
-        class="nav-item"
-      >
-        <template
-          slot="title"
-        >
+
+      <base-dropdown tag="li" :menu-on-right="!$rtl.isRTL" title-tag="a" title-classes="nav-link" class="nav-item">
+        <template slot="title">
           <div v-if="$store.state.notifications.length > 0" class="notification d-none d-lg-block d-xl-block"></div>
           <i class="tim-icons icon-sound-wave"></i>
           <p class="d-lg-none">New Notifications</p>
         </template>
-        
-        <li @click="notificationReaded(notification._id)" v-for="notification in $store.state.notifications" class="nav-link">
+
+        <li @click="notificationReaded(notification._id)" v-for="notification in $store.state.notifications"
+          class="nav-link">
           <a href="#" class="nav-item dropdown-item">
-            <b style="color:orangered">{{ unixToDate(notification.time)}}</b>
+            <b style="color:orangered">{{ unixToDate(notification.time) }}</b>
             <div style="margin-left:50px">
-              <b>Device: </b> {{notification.deviceName}} <br>
-              <b>Variable: </b> {{notification.variableFullName}} <br>
-              <b>Condition: </b> {{notification.condition}} <br>
-              <b>Limit: </b> {{notification.value}} <br>
-              <b>Value: </b> {{notification.payload.value}}
+              <b>Device: </b> {{ notification.deviceName }} <br>
+              <b>Variable: </b> {{ notification.variableFullName }} <br>
+              <b>Condition: </b> {{ notification.condition }} <br>
+              <b>Limit: </b> {{ notification.value }} <br>
+              <b>Value: </b> {{ notification.payload.value }}
             </div>
           </a>
-        
         </li>
+
       </base-dropdown>
-      <base-dropdown
-        tag="li"
-        :menu-on-right="!$rtl.isRTL"
-        title-tag="a"
-        class="nav-item"
-        title-classes="nav-link"
-        menu-classes="dropdown-navbar"
-      >
-        <template
-          slot="title"
-        >
+
+      <base-dropdown tag="li" :menu-on-right="!$rtl.isRTL" title-tag="a" class="nav-item" title-classes="nav-link"
+        menu-classes="dropdown-navbar">
+        <template slot="title">
           <div class="photo"><img src="img/mike.jpg" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p class="d-lg-none">Log out</p>
@@ -94,7 +67,6 @@
 import { CollapseTransition } from "vue2-transitions";
 import { BaseNav, Modal } from "@/components";
 import { Select, Option } from "element-ui";
-
 export default {
   components: {
     CollapseTransition,
@@ -142,9 +114,7 @@ export default {
           token: this.$store.state.auth.token
         }
       };
-
       var auto
-
       const toSend = {
         notifId: notifId
       };
