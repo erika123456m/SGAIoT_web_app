@@ -4,7 +4,6 @@ const { checkAuth } = require("../middlewares/authentication.js");
 var mqtt = require('mqtt');
 const axios = require("axios");
 const colors = require("colors");
-const { dragDisable } = require('d3');
 
 import Data from "../models/data.js";
 import Device from "../models/device.js";
