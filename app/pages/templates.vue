@@ -39,6 +39,10 @@
 
               <br />
 
+              <base-input v-model.number="ncConfig.variableSendFreq" label="Send Freq" type="number"></base-input>
+              
+              <br />
+
               <base-input v-model.number="ncConfig.chartTimeAgo" label="Chart Back Time (mins)" type="number">
               </base-input>
 

@@ -7,8 +7,6 @@
         <div v-for="(widget, index) in $store.state.selectedDevice.template.widgets" :key="index"
             :class="[widget.column]">
 
-            <Json :value="fixWidget(widget)"></Json>
-
             <Rtnumberchart v-if="widget.widget == 'numberchart'" :config="fixWidget(widget)"></Rtnumberchart>
 
             <Iotswitch v-if="widget.widget == 'switch'" :config="fixWidget(widget)"></Iotswitch>
