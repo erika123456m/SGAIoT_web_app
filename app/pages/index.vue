@@ -1,10 +1,9 @@
 <template>
-  <div>
-      <h2>
-          Index
-      </h2>
+  <div class="row">
+    <h3></h3>
   </div>
 </template>
+
 
 <script>
 export default {
