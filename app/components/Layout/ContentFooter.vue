@@ -9,7 +9,7 @@
             rel="noopener"
             class="nav-link"
           >
-            Creative Tim
+            SGAIoT
           </a>
         </li>
         <li class="nav-item">
@@ -40,7 +40,7 @@
           href="#"
           target="_blank"
           rel="noopener"
-          >Creative Tim</a
+          >SGAIoT</a
         >
         for a better web.
       </div>

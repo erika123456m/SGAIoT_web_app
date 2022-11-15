@@ -1,32 +1,20 @@
 <template>
-    <div>
-        <!-- FORM ADD DEVICE -->
+  <div>
+    <!-- FORM ADD DEVICE -->
     <div class="row">
-      <Json :value="$store.state.selectedDevice"></Json>
-        <card>
+      <card>
         <div slot="header">
           <h4 class="card-title">Add new Device</h4>
         </div>
 
         <div class="row">
           <div class="col-4">
-            <base-input
-              label="Device Name"
-              type="text"
-              placeholder="Ex: Home, Office..."
-              v-model="newDevice.name"
-            >
+            <base-input label="Device Name" type="text" placeholder="Ex: Home, Office..." v-model="newDevice.name">
             </base-input>
           </div>
 
           <div class="col-4">
-            <base-input
-              label="Device Id"
-              type="text"
-              placeholder="Ex: 7777-8888"
-              v-model="newDevice.dId"
-
-            >
+            <base-input label="Device Id" type="text" placeholder="Ex: 7777-8888" v-model="newDevice.dId">
             </base-input>
           </div>
 
@@ -35,19 +23,10 @@
               <label> Template </label>
             </slot>
 
-            <el-select
-              v-model="selectedIndexTemplate"
-              placeholder="Select Template"
-              class="select-primary"
-              style="width:100%"
-            >
-              <el-option
-                v-for="(template, index) in templates"
-                :key="template._id"
-                class="text-dark"
-                :value="index"
-                :label="template.name"
-              ></el-option>
+            <el-select v-model="selectedIndexTemplate" placeholder="Select Template" class="select-primary"
+              style="width:100%">
+              <el-option v-for="(template, index) in templates" :key="template._id" class="text-dark" :value="index"
+                :label="template.name"></el-option>
             </el-select>
           </div>
         </div>
@@ -68,10 +47,9 @@
         </div>
 
         <el-table :data="$store.state.devices">
-
           <el-table-column label="#" min-width="50" align="center">
             <div slot-scope="{ row, $index }">
-                {{$index + 1 }}
+              {{ $index + 1 }}
             </div>
           </el-table-column>
 
@@ -81,64 +59,41 @@
 
           <el-table-column prop="password" label="Password"></el-table-column>
 
-          <el-table-column
-            prop="templateName"
-            label="Template"
-          ></el-table-column>
+          <el-table-column prop="templateName" label="Template"></el-table-column>
 
           <el-table-column label="Actions">
-
             <div slot-scope="{ row, $index }">
-
               <el-tooltip content="Saver Status Indicator" style="margin-right:10px">
-                <i class="fas fa-database " :class="{'text-success' : row.saverRule.status, 'text-dark' : !row.saverRule.status}" ></i>
+                <i class="fas fa-database " :class="{
+                  'text-success': row.saverRule.status,
+                  'text-dark': !row.saverRule.status
+                }"></i>
               </el-tooltip>
 
               <el-tooltip content="Database Saver">
-                <base-switch
-                  @click="updateSaverRuleStatus(row.saverRule)"
-                  :value="row.saverRule.status"
-                  type="primary"
-                  on-text="On"
-                  off-text="Off"
-                ></base-switch>
+                <base-switch @click="updateSaverRuleStatus(row.saverRule)" :value="row.saverRule.status" type="primary"
+                  on-text="On" off-text="Off"></base-switch>
               </el-tooltip>
 
-              <el-tooltip
-                content="Delete"
-                effect="light"
-                :open-delay="300"
-                placement="top"
-              >
-                <base-button
-                  type="danger"
-                  icon
-                  size="sm"
-                  class="btn-link"
-                  @click="deleteDevice(row)"
-                >
+              <el-tooltip content="Delete" effect="light" :open-delay="300" placement="top">
+                <base-button type="danger" icon size="sm" class="btn-link" @click="deleteDevice(row)">
                   <i class="tim-icons icon-simple-remove "></i>
                 </base-button>
               </el-tooltip>
-
             </div>
-
           </el-table-column>
-
         </el-table>
       </card>
     </div>
-    <Json :value="$store.state.selectedDevice"></Json>
-    <Json :value="$store.state.devices"></Json>
-
   </div>
 </template>
 
 <script>
 import { Table, TableColumn } from "element-ui";
 import { Select, Option } from "element-ui";
+
 export default {
-  middleware: 'authenticated',
+  middleware: "authenticated",
   components: {
     [Table.name]: Table,
     [TableColumn.name]: TableColumn,
@@ -158,23 +113,31 @@ export default {
     };
   },
   mounted() {
+
     this.getTemplates();
   },
   methods: {
-
     updateSaverRuleStatus(rule) {
+
       var ruleCopy = JSON.parse(JSON.stringify(rule));
+
       ruleCopy.status = !ruleCopy.status;
-      const toSend = { rule: ruleCopy };
+
+      const toSend = {
+        rule: ruleCopy
+      };
+
       const axiosHeaders = {
         headers: {
           token: this.$store.state.auth.token
         }
       };
+
       this.$axios
         .put("/saver-rule", toSend, axiosHeaders)
         .then(res => {
-          
+
+
           if (res.data.status == "success") {
 
             this.$store.dispatch("getDevices");
@@ -184,7 +147,9 @@ export default {
               icon: "tim-icons icon-check-2",
               message: " Device Saver Status Updated"
             });
+
           }
+
           return;
         })
         .catch(e => {
@@ -197,6 +162,7 @@ export default {
           return;
         });
     },
+
     deleteDevice(device) {
       const axiosHeaders = {
         headers: {
@@ -206,6 +172,7 @@ export default {
           dId: device.dId
         }
       };
+
       this.$axios
         .delete("/device", axiosHeaders)
         .then(res => {
@@ -216,7 +183,9 @@ export default {
               message: device.name + " deleted!"
             });
           }
+
           $nuxt.$emit("time-to-get-devices");
+
           return;
         })
         .catch(e => {
@@ -229,7 +198,6 @@ export default {
           return;
         });
     },
-
     //new device
     createNewDevice() {
       if (this.newDevice.name == "") {
@@ -240,6 +208,7 @@ export default {
         });
         return;
       }
+
       if (this.newDevice.dId == "") {
         this.$notify({
           type: "warning",
@@ -248,6 +217,7 @@ export default {
         });
         return;
       }
+
       if (this.selectedIndexTemplate == null) {
         this.$notify({
           type: "warning",
@@ -256,11 +226,13 @@ export default {
         });
         return;
       }
+
       const axiosHeaders = {
         headers: {
           token: this.$store.state.auth.token
         }
       };
+
       //ESCRIBIMOS EL NOMBRE Y EL ID DEL TEMPLATE SELECCIONADO EN EL OBJETO newDevice
       this.newDevice.templateId = this.templates[
         this.selectedIndexTemplate
@@ -268,22 +240,27 @@ export default {
       this.newDevice.templateName = this.templates[
         this.selectedIndexTemplate
       ].name;
+
       const toSend = {
         newDevice: this.newDevice
       };
+
       this.$axios
         .post("/device", toSend, axiosHeaders)
         .then(res => {
           if (res.data.status == "success") {
             this.$store.dispatch("getDevices");
+
             this.newDevice.name = "";
             this.newDevice.dId = "";
             this.selectedIndexTemplate = null;
+
             this.$notify({
               type: "success",
               icon: "tim-icons icon-check-2",
               message: "Success! Device was added"
             });
+
             return;
           }
         })
@@ -305,6 +282,7 @@ export default {
           }
         });
     },
+
     //Get Templates
     async getTemplates() {
       const axiosHeaders = {
@@ -312,9 +290,11 @@ export default {
           token: this.$store.state.auth.token
         }
       };
+
       try {
         const res = await this.$axios.get("/template", axiosHeaders);
         console.log(res.data);
+
         if (res.data.status == "success") {
           this.templates = res.data.data;
         }
@@ -338,6 +318,7 @@ export default {
           dId: device.dId
         }
       };
+
       this.$axios
         .delete("/device", axiosHeader)
         .then(res => {
@@ -349,7 +330,6 @@ export default {
             });
             this.$store.dispatch("getDevices");
           }
-
         })
         .catch(e => {
           console.log(e);
@@ -360,6 +340,7 @@ export default {
           });
         });
     },
+
   }
 };
 </script>

@@ -57,6 +57,7 @@
                 </card>
             </div>
         </div>
+
         <!-- ALARMS TABLE -->
         <div class="row" v-if="$store.state.devices.length > 0">
             <div class="col-sm-12">
@@ -64,7 +65,7 @@
                     <div slot="header">
                         <h4 class="card-title">Alarm Rules</h4>
                     </div>
-        
+
                     <el-table v-if="$store.state.selectedDevice.alarmRules.length > 0"
                         :data="$store.state.selectedDevice.alarmRules">
                         <el-table-column min-width="50" label="#" align="center">
@@ -72,41 +73,42 @@
                                 {{ $index + 1 }}
                             </div>
                         </el-table-column>
-        
+
                         <el-table-column prop="variableFullName" label="Var Name"></el-table-column>
-        
-                        <el-table-column prop="variable" label="Variable"></el-table-column>
-        
+
+                        <el-table-column prop="variable" label="Var"></el-table-column>
+
                         <el-table-column prop="condition" label="Condition"></el-table-column>
-        
+
                         <el-table-column prop="value" label="Value"></el-table-column>
-        
+
                         <el-table-column prop="triggerTime" label="Trigger Time"></el-table-column>
-        
+
                         <el-table-column prop="counter" label="Matches"></el-table-column>
-        
-                        <el-table-column header-align="right" align="right" label="Actions">
+
+                        <el-table-column min-width="110" header-align="right" align="right" label="Actions">
                             <div slot-scope="{ row, $index }" class="text-right table-actions">
                                 <el-tooltip content="Delete" effect="light" placement="top">
-                                    <base-button @click="deleteDevice(row)" type="danger" icon size="sm" class="btn-link">
+                                    <base-button @click="deleteDevice(row)" type="danger" icon size="sm"
+                                        class="btn-link">
                                         <i class="tim-icons icon-simple-remove "></i>
                                     </base-button>
                                 </el-tooltip>
-        
+
                                 <el-tooltip content="Rule Status" style="margin-left: 20px;">
                                     <i class="fas fa-exclamation-triangle" :class="{ 'text-warning': row.status }"></i>
                                 </el-tooltip>
-        
+
                                 <!-- no ato row.status al v model porque al cambiar de status cambiaria directo sobre store lo que daría error en 
-                              cambio uso el value, al accionar el switch no cambiará el objeto, pero podré cambiar el valor en la función -->
+                      cambio uso el value, al accionar el switch no cambiará el objeto, pero podré cambiar el valor en la función -->
                                 <el-tooltip content="Change Rule Status" style="margin-left: 5px;">
-                                    <base-switch @click="updateStatusRule(row)" :value="row.status" type="primary" on-text="ON"
-                                        off-text="OFF" style="margin-top: 10px;"></base-switch>
+                                    <base-switch @click="updateStatusRule(row)" :value="row.status" type="primary"
+                                        on-text="ON" off-text="OFF" style="margin-top: 10px;"></base-switch>
                                 </el-tooltip>
                             </div>
                         </el-table-column>
                     </el-table>
-        
+
                     <h4 v-else class="card-title">No Alarm Rules</h4>
                 </card>
             </div>
@@ -117,6 +119,7 @@
 <script>
 import { Select, Option } from "element-ui";
 import { Table, TableColumn } from "element-ui";
+
 export default {
     middleware: "authenticated",
     components: {
@@ -143,7 +146,9 @@ export default {
     },
     methods: {
 
+
         deleteDevice(rule) {
+
             const axiosHeaders = {
                 headers: {
                     token: this.$store.state.auth.token
@@ -152,6 +157,7 @@ export default {
                     emqxRuleId: rule.emqxRuleId
                 }
             };
+
             this.$axios
                 .delete("/alarm-rule", axiosHeaders)
                 .then(res => {
@@ -175,15 +181,20 @@ export default {
                     return;
                 });
         },
+
         updateStatusRule(rule) {
             const axiosHeaders = {
                 headers: {
                     token: this.$store.state.auth.token
                 }
             };
+
             var ruleCopy = JSON.parse(JSON.stringify(rule));
+
             ruleCopy.status = !ruleCopy.status;
+
             const toSend = { rule: ruleCopy };
+
             this.$axios
                 .put("/alarm-rule", toSend, axiosHeaders)
                 .then(res => {
@@ -193,7 +204,9 @@ export default {
                             icon: "tim-icons icon-check-2",
                             message: "Success! Alarm Rule was updated"
                         });
+
                         this.$store.dispatch("getDevices");
+
                         return;
                     }
                 })
@@ -217,6 +230,7 @@ export default {
                 });
                 return;
             }
+
             if (this.newRule.condition == null) {
                 this.$notify({
                     type: "warning",
@@ -225,6 +239,7 @@ export default {
                 });
                 return;
             }
+
             if (this.newRule.value == null) {
                 this.$notify({
                     type: "warning",
@@ -233,6 +248,7 @@ export default {
                 });
                 return;
             }
+
             if (this.newRule.triggerTime == null) {
                 this.$notify({
                     type: "warning",
@@ -241,6 +257,8 @@ export default {
                 });
                 return;
             }
+
+
             this.newRule.dId = this.$store.state.selectedDevice.dId;
             this.newRule.deviceName = this.$store.state.selectedDevice.name;
             this.newRule.variableFullName = this.$store.state.selectedDevice.template.widgets[
@@ -249,11 +267,15 @@ export default {
             this.newRule.variable = this.$store.state.selectedDevice.template.widgets[
                 this.selectedWidgetIndex
             ].variable;
+
+
+
             const axiosHeaders = {
                 headers: {
                     token: this.$store.state.auth.token
                 }
             };
+
             var toSend = {
                 newRule: this.newRule
             };
@@ -266,26 +288,29 @@ export default {
                         this.newRule.condition = null;
                         this.newRule.value = null;
                         this.newRule.triggerTime = null;
+                        this.selectedWidgetIndex = null;
+
                         this.$notify({
                             type: "success",
                             icon: "tim-icons icon-check-2",
                             message: "Success! Alarm Rule was added"
                         });
+
                         this.$store.dispatch("getDevices");
-            
+
+                        return;
+                    }
+                })
+                .catch(e => {
+                    this.$notify({
+                        type: "danger",
+                        icon: "tim-icons icon-alert-circle-exc",
+                        message: "Error"
+                    });
+                    console.log(e);
                     return;
+                });
         }
-        })
-        .catch(e => {
-          this.$notify({
-            type: "danger",
-            icon: "tim-icons icon-alert-circle-exc",
-            message: "Error"
-          });
-          console.log(e);
-          return;
-        });
     }
-  }
 };
 </script>
