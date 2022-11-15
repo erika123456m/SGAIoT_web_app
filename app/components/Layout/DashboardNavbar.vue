@@ -43,7 +43,7 @@
       <base-dropdown tag="li" :menu-on-right="!$rtl.isRTL" title-tag="a" class="nav-item" title-classes="nav-link"
         menu-classes="dropdown-navbar">
         <template slot="title">
-          <div class="photo"><img src="img/mike.jpg" /></div>
+          <div class="photo"><img src="img/user.png" /></div>
           <b class="caret d-none d-lg-block d-xl-block"></b>
           <p @click="logOut()" class="d-lg-none">Log out</p>
         </template>

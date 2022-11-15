@@ -4,7 +4,7 @@
     <div class="row">
       <card>
         <div slot="header">
-          <h4 class="card-title">Widgets {{ iotIndicatorConfig.column }}</h4>
+          <h4 class="card-title">Widgets</h4>
         </div>
 
         <div class="row">

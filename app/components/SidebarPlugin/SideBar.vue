@@ -39,7 +39,7 @@ export default {
     },
     logo: {
       type: String,
-      default: 'http://demos.creative-tim.com/nuxt-black-dashboard-pro/img/icon-nuxt.svg',
+      default: 'img//Logo_UAM.png',
       description: 'Sidebar app logo'
     },
     backgroundColor: {
