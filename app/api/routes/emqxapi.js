@@ -13,7 +13,9 @@ const auth = {
 global.saverResource = null;
 global.alarmResource = null;
 
+// ****************************************
 // ******** EMQX RESOURCES MANAGER ********
+// ****************************************
 
 //list resources
 async function listResources() {
@@ -129,7 +131,11 @@ async function createResources() {
         console.log("Error creating resources");
         console.log(error);
     }
+
+   
+
 }
+
 
 setTimeout(() => {
   listResources();
