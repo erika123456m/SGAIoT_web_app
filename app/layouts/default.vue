@@ -2,7 +2,7 @@
   <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
     <notifications></notifications>
 
-    <side-bar :background-color="sidebarBackground" short-title="SGAIoR" title="SGAIoT">
+    <side-bar :background-color="sidebarBackground" short-title="SGAIoT" title="SGAIoT">
       <template slot-scope="props" slot="links">
         <sidebar-item :link="{
           name: 'Dashboard',

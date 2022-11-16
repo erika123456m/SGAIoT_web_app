@@ -1,49 +1,22 @@
 <template>
   <footer class="footer">
     <div class="container-fluid">
-      <ul class="nav">
-        <li class="nav-item">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            SGAIoT
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            About Us
-          </a>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            Blog
-          </a>
-        </li>
-      </ul>
-      <div class="copyright">
-        &copy; {{ year }}, made with <i class="tim-icons icon-heart-2"></i> by
-        
-        <a
-          href="#"
-          target="_blank"
-          rel="noopener"
-          >SGAIoT</a
-        >
-        for a better web.
-      </div>
+      <hr size="5px" color="black">
+      </hr>
+      <table style="width:100%">
+        <tr>
+          <td>
+            <center>Proyecto 776-120<br>SGAIoT</br></center>
+          </td>
+          <td>
+            <center>Universidad Autonoma de Manizales<br>Grupo investigacion automatica</br></center>
+          </td>
+          <td>
+            <center>Manual de usuario<br>click here</br></center>
+          </td>
+        </tr>
+      </table>
+
     </div>
   </footer>
 </template>
@@ -56,4 +29,6 @@ export default {
   }
 };
 </script>
-<style></style>
+<style>
+
+</style>
