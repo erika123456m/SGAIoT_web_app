@@ -21,22 +21,33 @@
 
         <div>
 
-            <h1><center><bold>SGAIoT</bold></center></h1>
+            <h1><center>SGAIoT</center></h1>
             <h3><center>Project 776-120</center></h3>
             <h4><center>Sistema de gestion agricola basado en internet de las cosas y aprendizaje de maquina</center></h4>
 
-            <h4><center><bold>Equipo de trabajo</bold></center></h4>
+            <h4><center>Equipo de trabajo</center></h4>
             <h3>Integrantes Principales</h3>
             <table style="width:100%">
             <tr>
-                <td><center><br><img src="img//user.png" height="150"></img></br></img></center></td> 
-                <td><center><br><img src="img//user.png" height="150"></img></br></img></center></td>
-                <td><center><br><img src="img//user.png" height="150"></img></br></img></center></td>
+                <td><center><br><img src="img//Docente1.png" height="150"></img></br></img></center></td> 
+                <td><center><br><img src="img//Docente2.png" height="150"></img></br></img></center></td>
+                <td><center><br><img src="img//Docente3.png" height="150"></img></br></img></center></td>
             </tr>
             <tr>
-                <td><br><center>David Rivera<br>2018-0001</br></center></td>
-                <td><br><center>Gabriel Cadavid<br>2018-0001</br></center></td>
-                <td><br><center>Julian Caicedo<br>2018-0001</br></center></td>
+                <td><br><center><h4>David Rivera</h4>
+                Ingeniero Electrónico</br>
+                Magíster en Ingeniería</br>
+                </center></td>
+                <td><br><center><h4>Gabriel Cadavid</h4>
+                Ingeniero Químico</br>
+                Magíster en Ingeniería</br>
+                Ingeniería Química</br>
+                </center></td>
+                <td><br><center><h4>Julian Caicedo</h4>
+                Ingeniero Electrónico</br>
+                Magíster en Ingeniería</br>
+                y Automatización industrial</br>
+                </center></td>
             </tr>
             <br></br>
             <h3>Colaboradores</h3>
