@@ -32,30 +32,7 @@
         </li>
 
         <li class="button-container mt-4">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-default btn-block btn-round"
-          >
-            Documentation
-          </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-primary btn-block btn-round"
-          >
-            Download Now
-          </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-info btn-block btn-round"
-          >
-            Upgrade to PRO
-          </a>
+          <a></a>
         </li>
       </ul>
     </div>
